@@ -16,3 +16,6 @@ class KakaoLoginRequestSerializer(serializers.Serializer):
 class KakaoRegisterRequestSerializer(serializers.Serializer):
     access_code = serializers.CharField()
     description = serializers.CharField()
+    
+class UserPatchSerializer(serializers.Serializer):
+    description = serializers.CharField()
