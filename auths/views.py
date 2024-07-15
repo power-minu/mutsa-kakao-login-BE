@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from auths.models import MutsaUser
-from auths.serializers import KakaoLoginRequestSerializer, KakaoRegisterRequestSerializer, MutsaUserResponseSerializer
+from auths.serializers import KakaoLoginRequestSerializer, UserPatchSerializer, MutsaUserResponseSerializer
 
 class KakaoAccessTokenException(Exception):
     pass
@@ -102,8 +102,21 @@ def kakao_login(request):
 def verify(request):
     return Response({'datail': 'Token is verified.'}, status=200)
 
-@api_view(['GET'])
+@api_view(['GET', 'PATCH'])
 @permission_classes([IsAuthenticated])
 def user_detail(request):
-    serializer = MutsaUserResponseSerializer(request.user)
-    return Response(serializer.data)
+    if request.method == 'GET':
+        serializer = MutsaUserResponseSerializer(request.user)
+        return Response(serializer.data)
+    elif request.method == 'PATCH':
+        user = MutsaUser.objects.get(nickname=request.user.nickname)
+        
+        patchSerializer = UserPatchSerializer(data=request.data)
+        patchSerializer.is_valid(raise_exception=True)
+        data = patchSerializer.validated_data
+        
+        user.description = data['description']
+        user.save()
+        
+        serializer = MutsaUserResponseSerializer(request.user)
+        return Response(serializer.data)
