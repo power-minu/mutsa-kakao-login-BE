@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from auths.views import kakao_login, verify, user_detail
+from auths.views import kakao_login, verify, user_detail, user_my_detail
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,4 +26,5 @@ urlpatterns = [
     path('auth/verify', verify),
 
     path('users', user_detail),
+    path('users/me', user_my_detail),
 ]
