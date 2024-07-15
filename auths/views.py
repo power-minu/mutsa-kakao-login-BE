@@ -106,7 +106,8 @@ def verify(request):
 @permission_classes([IsAuthenticated])
 def user_detail(request):
     if request.method == 'GET':
-        serializer = MutsaUserResponseSerializer(request.user)
+        users = MutsaUser.objects.all()
+        serializer = MutsaUserResponseSerializer(users, many=True)
         return Response(serializer.data)
     elif request.method == 'PATCH':
         user = MutsaUser.objects.get(nickname=request.user.nickname)
@@ -120,3 +121,9 @@ def user_detail(request):
         
         serializer = MutsaUserResponseSerializer(request.user)
         return Response(serializer.data)
+    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def user_my_detail(request):
+    serializer = MutsaUserResponseSerializer(request.user)
+    return Response(serializer.data)
