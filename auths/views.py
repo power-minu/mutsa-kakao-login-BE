@@ -119,7 +119,7 @@ def user_detail(request):
         user.description = data['description']
         user.save()
         
-        serializer = MutsaUserResponseSerializer(request.user)
+        serializer = MutsaUserResponseSerializer(user)
         return Response(serializer.data)
     
 @api_view(['GET'])
