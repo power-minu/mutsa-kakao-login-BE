@@ -18,12 +18,16 @@ from django.contrib import admin
 from django.urls import path
 
 from auths.views import kakao_login, verify, user_detail, user_my_detail
+from rest_framework_simplejwt.views import (
+    TokenRefreshView
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     
     path('auth/kakao/login', kakao_login),
     path('auth/verify', verify),
+    path('auth/refresh', TokenRefreshView.as_view(), name='token_refresh'),
 
     path('users', user_detail),
     path('users/me', user_my_detail),
