@@ -79,6 +79,7 @@ def kakao_login(request):
         kakao_data = exchange_kakao_access_token(data['access_code'])
         verify_kakao_oidc(kakao_data)
         nickname = extract_kakao_nickname(kakao_data)
+        sub = extract_kakao_sub(kakao_data)
     except KakaoAccessTokenException:
         return Response({'detail': 'Access token 교환에 실패했습니다.'}, status=401)
     except KakaoDataException:
@@ -87,9 +88,9 @@ def kakao_login(request):
         return Response({'detail': 'OIDC 인증에 실패했습니다.'}, status=401)
 
     try:
-        user = MutsaUser.objects.get(nickname=nickname)
+        user = MutsaUser.objects.get(kakao_sub=sub)
     except MutsaUser.DoesNotExist:
-        user = MutsaUser.objects.create_user(nickname=nickname, description="안녕하세요!")
+        user = MutsaUser.objects.create_user(nickname=nickname, description="안녕하세요!", kakao_sub=sub)
 
     refresh = RefreshToken.for_user(user)
     return Response({

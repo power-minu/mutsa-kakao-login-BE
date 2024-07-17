@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 class MutsaUserManager(BaseUserManager):
-    def create_user(self, nickname, description, password=None):
+    def create_user(self, nickname, description, kakao_sub, password=None):
         if not nickname:
             raise ValueError('User must have a nickname')
         
@@ -10,6 +10,7 @@ class MutsaUserManager(BaseUserManager):
             nickname=nickname,
         )
         user.description = description
+        user.kakao_sub = kakao_sub
         user.set_password(password)
         user.save()
         return user
@@ -32,6 +33,7 @@ class MutsaUser(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     description = models.TextField()
+    kakao_sub = models.CharField(max_length=1024, unique=True)
 
     objects = MutsaUserManager()
 
